@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Sample</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.2.1/exif.min.js"></script>
+<script type='text/javascript'>
+$(function() {
+    $('#test').on('click', function() {
+        var file_input = $('#file-input');
+        var file = file_input[0].files[0];
+        
+        // EXIF.getDataでexif情報を解析
+        EXIF.getData(file, function() {
+            var result = '';
+            // EXIF.getTag(this, "[exifのタグ名]")で、値を取得
+            if (EXIF.getTag(this, "DateTimeOriginal") === undefined) {
+                result += "撮影日:" + "情報がありません";
+            } else {
+                result += '撮影日:' + EXIF.getTag(this, "DateTimeOriginal");
+            }
+            
+            result += "<br>";
+
+            // EXIF.getTag(this, "[exifのタグ名]")で、値を取得
+            // if (EXIF.getTag(this, "GPSAreaInformation") === undefined) {
+            //     result += "Orientation:" + "情報がありません";
+            // } else {
+            //     result += 'Orientation:' + EXIF.getTag(this, "GPSAreaInformation");
+            // }
+
+            result += '<br>';
+
+
+            // EXIF.getTag(this, "[exifのタグ名]")で、値を取得
+            if (EXIF.getTag(this, "GPSLatitude") === undefined) {
+                result += "GPS:" + "情報がありません";
+            } else {
+                result += "GPS" + EXIF.getTag(this, "GPSLatitude") + ":" + EXIF.getTag(this, "GPSLongitude");
+                // var latitude = EXIF.getTag(this, "GPSLatitude");
+                // var longitude = EXIF.getTag(this, "GPSLongitude");
+
+                // const lat = latitude.replace(",", "").replace(".", "");
+                // const lon = longitude.replace(",", "").replace(".", "");
+                // console.log(latitude, longitude);
+                //place.innerHTML = "<a href='https://www.google.com/maps/search/?api=1&query=' + EXIF.getTag(this, "GPSLatitude") + ',' + EXIF.getTag(this, "GPSLongitude")>場所はこちら</a>";
+            }
+            result += '<br>';
+
+            $('#result').html(result);
+
+            
+        });
+    });
+});
+
+function previewImage(obj){
+    var fileReader = new FileReader();
+    fileReader.onload = (function() {
+        document.getElementById('preview').src = fileReader.result;
+    });
+    fileReader.readAsDataURL(obj.files[0]);
+}
+
+make_URL = function() {
+    const URL = "https://www.google.com/maps/search/?api=1&query=35.6812362,139.7649361"
+}
+
+</script>
+</head>
+<body>    
+    <h2>いつどこサーチ</h2>
+    <input id="file-input" type="file" accept='image/*' onchange="previewImage(this);"/>
+    <div>
+        <input type="button" id="test" value="実行"/>
+    </div>
+    <div id="result"></div>
+    <div id="place"></div>
+
+    <p>
+    Preview:<br>
+    <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-width:500px;">
+    </p>
+</body>
+</html>
